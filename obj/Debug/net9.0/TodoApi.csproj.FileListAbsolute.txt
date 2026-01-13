@@ -131,3 +131,12 @@
 /home/danis/Documents/project/TodoApi/TodoApi/bin/Debug/net9.0/Nedo.AspNet.Common.Validation.Core.dll
 /home/danis/Documents/project/TodoApi/TodoApi/bin/Debug/net9.0/Nedo.AspNet.Request.Validation.dll
 /home/danis/Documents/project/TodoApi/TodoApi/bin/Debug/net9.0/id/Nedo.AspNet.Common.Validation.Core.resources.dll
+/home/danis/Documents/project/TodoApi/TodoApi/obj/Debug/net9.0/TodoApi.sourcelink.json
+/home/danis/Documents/project/TodoApi/TodoApi/bin/Debug/net9.0/TodoApi.staticwebassets.runtime.json
+/home/danis/Documents/project/TodoApi/TodoApi/obj/Debug/net9.0/compressed/zgum4uwxsp-gccow2gs8l.gz
+/home/danis/Documents/project/TodoApi/TodoApi/obj/Debug/net9.0/compressed/8oy2zsxxhe-gccow2gs8l.gz
+/home/danis/Documents/project/TodoApi/TodoApi/bin/Debug/net9.0/Polly.dll
+/home/danis/Documents/project/TodoApi/TodoApi/bin/Debug/net9.0/Polly.Core.dll
+/home/danis/Documents/project/TodoApi/TodoApi/bin/Debug/net9.0/Scrutor.dll
+/home/danis/Documents/project/TodoApi/TodoApi/bin/Debug/net9.0/sindika.aspnet.requestresponse.dll
+/home/danis/Documents/project/TodoApi/TodoApi/bin/Debug/net9.0/sindika.aspnet.validation.dll

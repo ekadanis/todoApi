@@ -1,14 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TodoApi.Data;
+using TodoApi.Dtos.Todo;
 using TodoApi.Models;
-using Nedo.AspNet.Request.Validation.Attributes;
 
 namespace TodoApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-
 public class TodoController : ControllerBase
 {
     private readonly AppDbContext _context;
@@ -18,91 +17,99 @@ public class TodoController : ControllerBase
         _context = context;
     }
 
-    //GET: api/todo
+    // GET: api/todo
     [HttpGet]
-    public async Task<ActionResult<IEnumerable <TodoItem>>> GetTodos()
+    public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodos()
     {
         return await _context.TodoItems.ToListAsync();
     }
 
-    //Get: api/todo/5
+    // GET: api/todo/5
     [HttpGet("{id}")]
     public async Task<ActionResult<TodoItem>> GetTodo(int id)
     {
         var todo = await _context.TodoItems.FindAsync(id);
 
-        if(todo == null)
-        {
-            return NotFound(new {message = "TodoNotFound"});
-        }
+        if (todo is null)
+            return NotFound(new { message = "Todo not found" });
 
         return todo;
     }
 
-    //POST: api/todo
+    // POST: api/todo
     [HttpPost]
-    public async Task<ActionResult<TodoItem>> CreateTodo(TodoItem todo)
+    public async Task<IActionResult> CreateTodo([FromForm] CreateTodoRequest request)
     {
-        if (string.IsNullOrWhiteSpace(todo.Title))
+        var todo = new TodoItem
         {
-            return BadRequest(new {message = "TItle is required"});
+            Title = request.Title,
+            Description = request.Description,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        // === SAVE IMAGE ===
+        if (request.AttachmentImage is not null)
+        {
+            var imageFileName = $"{Guid.NewGuid()}{Path.GetExtension(request.AttachmentImage.FileName)}";
+            var imagePath = Path.Combine("wwwroot", "uploads", "images", imageFileName);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(imagePath)!);
+
+            await using var stream = System.IO.File.Create(imagePath);
+            await request.AttachmentImage.CopyToAsync(stream);
+
+            todo.AttachmentImagePath = $"/uploads/images/{imageFileName}";
+        }
+
+        // === SAVE FILE ===
+        if (request.AttachmentFile is not null)
+        {
+            var fileFileName = $"{Guid.NewGuid()}{Path.GetExtension(request.AttachmentFile.FileName)}";
+            var filePath = Path.Combine("wwwroot", "uploads", "files", fileFileName);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+
+            await using var stream = System.IO.File.Create(filePath);
+            await request.AttachmentFile.CopyToAsync(stream);
+
+            todo.AttachmentFilePath = $"/uploads/files/{fileFileName}";
         }
 
         _context.TodoItems.Add(todo);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetTodo), new { id = todo.Id}, todo);
+        return CreatedAtAction(nameof(GetTodo), new { id = todo.Id }, todo);
     }
 
+
+    // PUT: api/todo/5
     [HttpPut("{id}")]
-    public async Task <IActionResult> UpdateTodo(int id, TodoItem todo)
+    public async Task<IActionResult> UpdateTodo(int id, [FromForm] CreateTodoRequest request)
     {
-        if(id != todo.Id)
-        {
-            return BadRequest(new {message = "ID mismatch"});
-        }
+        var todo = await _context.TodoItems.FindAsync(id);
 
-        var existingTodo  = await _context.TodoItems.FindAsync(id);
-        if(existingTodo == null)
-        {
-            return NotFound(new {message = "TodoNotFound"});
-        }
+        if (todo is null)
+            return NotFound(new { message = "Todo not found" });
 
-        existingTodo.Title = todo.Title;
-        existingTodo.Description = todo.Description;
-        existingTodo.IsCompleted = todo.IsCompleted;
-        
-        if (todo.IsCompleted && existingTodo.CompletedAt == null)
-        {
-            existingTodo.CompletedAt = DateTime.UtcNow;        
-        }
-        else if (!todo.IsCompleted)
-        {
-            existingTodo.CompletedAt = null;
-        }
+        // Update data
+        todo.Title = request.Title;
+        todo.Description = request.Description;
+        todo.UpdatedAt = DateTime.UtcNow;
 
-        try
-        {
-            await _context.SaveChangesAsync();
-        }catch(DbUpdateConcurrencyException)
-        {
-            if (!TodoExists(id))
-            {
-                return NotFound();
-            }
-            throw;
-    }
-    return NoContent();
+        await _context.SaveChangesAsync();
+
+        return NoContent();
     }
 
+    // DELETE: api/todo/5
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTodo(int id)
     {
         var todo = await _context.TodoItems.FindAsync(id);
-        if(todo == null)
-        {
-            return NotFound(new {message = "Todo Not Found"});
-        }
+
+        if (todo is null)
+            return NotFound(new { message = "Todo not found" });
 
         _context.TodoItems.Remove(todo);
         await _context.SaveChangesAsync();
@@ -110,28 +117,21 @@ public class TodoController : ControllerBase
         return NoContent();
     }
 
+    // PATCH: api/todo/5/toggle
     [HttpPatch("{id}/toggle")]
     public async Task<IActionResult> ToggleTodo(int id)
     {
         var todo = await _context.TodoItems.FindAsync(id);
-        if(todo == null)
-        {
-            return NotFound(new {message = "Todo not Found"});
-        }
+
+        if (todo is null)
+            return NotFound(new { message = "Todo not found" });
 
         todo.IsCompleted = !todo.IsCompleted;
-        todo.CompletedAt = todo.IsCompleted? DateTime.UtcNow : null;
+        todo.CompletedAt = todo.IsCompleted ? DateTime.UtcNow : null;
+        todo.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
 
         return Ok(todo);
     }
-
-    private bool TodoExists(int id)
-    {
-        return _context.TodoItems.Any(e => e.Id == id);
-    }
 }
-
-
-
