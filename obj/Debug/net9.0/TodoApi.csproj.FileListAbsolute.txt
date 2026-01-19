@@ -140,3 +140,12 @@
 /home/danis/Documents/project/TodoApi/TodoApi/bin/Debug/net9.0/Scrutor.dll
 /home/danis/Documents/project/TodoApi/TodoApi/bin/Debug/net9.0/sindika.aspnet.requestresponse.dll
 /home/danis/Documents/project/TodoApi/TodoApi/bin/Debug/net9.0/sindika.aspnet.validation.dll
+/home/danis/Documents/project/TodoApi/TodoApi/bin/Debug/net9.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/home/danis/Documents/project/TodoApi/TodoApi/bin/Debug/net9.0/Microsoft.IdentityModel.Abstractions.dll
+/home/danis/Documents/project/TodoApi/TodoApi/bin/Debug/net9.0/Microsoft.IdentityModel.JsonWebTokens.dll
+/home/danis/Documents/project/TodoApi/TodoApi/bin/Debug/net9.0/Microsoft.IdentityModel.Logging.dll
+/home/danis/Documents/project/TodoApi/TodoApi/bin/Debug/net9.0/Microsoft.IdentityModel.Protocols.dll
+/home/danis/Documents/project/TodoApi/TodoApi/bin/Debug/net9.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+/home/danis/Documents/project/TodoApi/TodoApi/bin/Debug/net9.0/Microsoft.IdentityModel.Tokens.dll
+/home/danis/Documents/project/TodoApi/TodoApi/bin/Debug/net9.0/System.IdentityModel.Tokens.Jwt.dll
+/home/danis/Documents/project/TodoApi/TodoApi/bin/Debug/net9.0/BCrypt.Net-Next.dll

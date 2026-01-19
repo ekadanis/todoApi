@@ -2,10 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TodoApi.Data;
 using Nedo.AspNet.Request.Validation.Extensions;
+using TodoApi.Extension.Jwt;
+using API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//add services to the container
+builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddRequestValidation();
@@ -33,7 +35,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseMiddleware<RequestCultureMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
